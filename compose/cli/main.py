@@ -1078,6 +1078,8 @@ class TopLevelCommand(object):
 
                 to_attach = up(True)
 
+            subprocess.call(self.project.scripts["after_up"], shell=True)
+                
             if detached or no_start:
                 return
 

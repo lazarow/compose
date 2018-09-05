@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from pprint import pprint
 
 import functools
 import io
@@ -238,7 +239,7 @@ class ConfigFile(namedtuple('_ConfigFile', 'filename config')):
         return {} if self.version < const.COMPOSEFILE_V3_3 else self.config.get('configs', {})
 
 
-class Config(namedtuple('_Config', 'version services volumes networks secrets configs')):
+class Config(namedtuple('_Config', 'version services volumes networks secrets configs after_up_script')):
     """
     :param version: configuration version
     :type  version: int
@@ -399,6 +400,7 @@ def load(config_details, compatibility=False):
     configs = load_mapping(
         config_details.config_files, 'get_configs', 'Config', config_details.working_dir
     )
+    after_up_script = config_details.config_files[0].config['after_up_script']
     service_dicts = load_services(config_details, main_file, compatibility)
 
     if main_file.version != V1:
@@ -409,7 +411,7 @@ def load(config_details, compatibility=False):
 
     version = V2_3 if compatibility and main_file.version >= V3_0 else main_file.version
 
-    return Config(version, service_dicts, volumes, networks, secrets, configs)
+    return Config(version, service_dicts, volumes, networks, secrets, configs, after_up_script)
 
 
 def load_mapping(config_files, get_func, entity_type, working_dir=None):

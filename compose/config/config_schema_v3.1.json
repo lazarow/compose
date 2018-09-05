@@ -50,6 +50,11 @@
         }
       },
       "additionalProperties": false
+    },
+    
+    "after_up_script": {
+      "id": "#/properties/after_up_script",
+      "type": "string"
     }
   },
 
